@@ -13,17 +13,18 @@ closed = 0
 
 class Scanner(threading.Thread):
     """ Scanner Thread class """
-    def __init__(self, test_port_queue, open_port_queue, lock):
+    def __init__(self, ip, test_port_queue, open_port_queue, lock):
         super(Scanner, self).__init__()
         self.test_port_queue = test_port_queue
         self.open_port_queue = open_port_queue
         self.lock = lock
+        self.ip = ip
  
     def run(self):
         global closed
         src_port = RandShort()
         port = self.test_port_queue.get()
-        p = IP(dst=ip)/TCP(sport=src_port, dport=port, flags='S')
+        p = IP(dst=self.ip)/TCP(sport=src_port, dport=port, flags='S')
         resp = sr1(p, timeout=2)
         if str(type(resp)) == "<type 'NoneType'>":
             with self.lock:
@@ -60,7 +61,7 @@ def get_open_ports(ip, max_port=1024):
         print "Host %s is up, start scanning" % ip
         for port in range(0, max_port):
             test_port_queue.put(port)
-            scan = Scanner(test_port_queue, open_port_queue, lock)
+            scan = Scanner(ip, test_port_queue, open_port_queue, lock)
             scan.start()
         test_port_queue.join()
     else:
