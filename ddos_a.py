@@ -1,7 +1,8 @@
+#! /usr/bin/python
+
 import sys
 from port_scan_threading import get_open_ports
 from ddos import startDDOS
-
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
