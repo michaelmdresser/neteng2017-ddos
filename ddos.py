@@ -1,6 +1,6 @@
 from scapy.all import *
 from threading import Thread
-from time import sleep
+import time
 
 def sendPackets(subnetMin,subnetMax,victimAddress,victimPort):
 	for i in range(subnetMin,subnetMax):
