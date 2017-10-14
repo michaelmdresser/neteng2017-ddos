@@ -31,7 +31,7 @@ class Scanner(threading.Thread):
                 closed += 1
         elif resp.haslayer(TCP):
             if resp.getlayer(TCP).flags == 0x12:
-                send_rst = sr(IP(dst=ip)/TCP(sport=src_port, dport=port, flags='AR'), timeout=1)
+                send_rst = sr(IP(dst=self.ip)/TCP(sport=src_port, dport=port, flags='AR'), timeout=1)
                 with self.lock:
 #                    print "[*] %d open" % port
                     self.open_port_queue.put(port)
