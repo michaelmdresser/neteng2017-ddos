@@ -9,10 +9,8 @@ import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
  
-ip = "34.237.72.89"
-ports = range(0, 1000)
 closed = 0
- 
+
 class Scanner(threading.Thread):
     """ Scanner Thread class """
     def __init__(self, test_port_queue, open_port_queue, lock):
@@ -71,24 +69,7 @@ def get_open_ports(ip, max_port=1024):
     return list(open_port_queue.queue)
         
 
+# just for testing
 if __name__ == '__main__':
     open_ports = get_open_ports("34.237.72.89", max_port=90)
     print "Open ports: %s" % open_ports
-    #conf.verb = 0
-    #start_time = time.time()
-    #ports = range(1, 1024)
-    #lock = threading.Lock()
-    #queue = Queue.Queue()
-    #queue2 = Queue.Queue()
-    #if is_up(ip):
-    #    print "Host %s is up, start scanning" % ip
-    #    for port in ports:
-    #        queue.put(port)
-    #        scan = Scanner(queue, queue2, lock)
-    #        scan.start()
-    #    queue.join()
-    #    duration = time.time()-start_time
-    #    print "%s Scan Completed in %fs" % (ip, duration)
-    #    print "%d closed ports in %d total port scanned" % (closed, len(ports))
-    #else:
-    #    print "Host %s is Down" % ip
