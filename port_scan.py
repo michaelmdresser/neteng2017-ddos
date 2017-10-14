@@ -1,0 +1,49 @@
+#! /usr/bin/python
+
+# http://resources.infosecinstitute.com/port-scanning-using-scapy/
+# https://securitylair.wordpress.com/2014/02/21/simple-port-scanner-in-python-with-scapy-2/
+
+import time
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR) # Disable the annoying No Route found warning !
+from scapy.all import *
+ 
+ip = "34.237.72.89"
+closed_ports = 0
+open_ports = []
+ 
+def is_up(ip):
+    """ Tests if host is up """
+    icmp = IP(dst=ip)/ICMP()
+    resp = sr1(icmp, timeout=10)
+    if resp == None:
+        return False
+    else:
+        return True
+ 
+if __name__ == '__main__':
+    conf.verb = 0 # Disable verbose in sr(), sr1() methods
+    start_time = time.time()
+    ports = range(1, 1024)
+    if is_up(ip):
+        print "Host %s is up, start scanning" % ip
+        for port in ports:
+            src_port = RandShort() # Getting a random port as source port
+            p = IP(dst=ip)/TCP(sport=src_port, dport=port, flags='S') # Forging SYN packet
+            resp = sr1(p, timeout=2) # Sending packet
+            if str(type(resp)) == "<type 'NoneType'>":
+                closed_ports += 1
+            elif resp.haslayer(TCP):
+                if resp.getlayer(TCP).flags == 0x12:
+                    send_rst = sr(IP(dst=ip)/TCP(sport=src_port, dport=port, flags='AR'), timeout=1)
+                    open_ports.append(port)
+                elif resp.getlayer(TCP).flags == 0x14:
+                    closed_ports += 1
+        duration = time.time()-start_time
+        print "%s Scan Completed in %fs" % (ip, duration)
+        if len(open_ports) != 0:
+            for opp in open_ports:
+                print "%d open" % opp
+        print "%d closed ports in %d total port scanned" % (closed_ports, len(ports))
+    else:
+        print "Host %s is Down" % ip
